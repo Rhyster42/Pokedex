@@ -10,13 +10,19 @@ import (
 type cliCommand struct {
 	name        string
 	description string
-	callback    func() error
+	callback    func(*config) error
 }
 
-var commandMap map[string]cliCommand
+type config struct {
+	Next     string
+	Previous string
+}
+
+var commandsList map[string]cliCommand
+var pages config
 
 func init() {
-	commandMap = map[string]cliCommand{
+	commandsList = map[string]cliCommand{
 		"help": {
 			name:        "help",
 			description: "Displays a help message",
@@ -26,6 +32,16 @@ func init() {
 			name:        "exit",
 			description: "Exit the Pokedex",
 			callback:    commandExit,
+		},
+		"map": {
+			name:        "map",
+			description: "Shows the next 20 locations",
+			callback:    commandMap,
+		},
+		"mapb": {
+			name:        "mapb",
+			description: "Shows the previous 20 locations",
+			callback:    commandMapb,
 		},
 	}
 }
@@ -43,8 +59,8 @@ func startRepl() {
 		}
 
 		command := wordList[0]
-		if cmd, exists := commandMap[command]; exists {
-			err := cmd.callback()
+		if cmd, exists := commandsList[command]; exists {
+			err := cmd.callback(&pages)
 			if err != nil {
 				fmt.Printf("Error: %v\n", err)
 			}
@@ -54,17 +70,17 @@ func startRepl() {
 	}
 }
 
-func commandExit() error {
+func commandExit(cfg *config) error {
 	fmt.Println("Closing the Pokedex... Goodbye!")
 	os.Exit(0)
 	return nil
 }
 
-func commandHelp() error {
+func commandHelp(cfg *config) error {
 	fmt.Println("Welcome to the Pokedex!")
 	fmt.Printf("Usage:\n\n")
 
-	for _, command := range commandMap {
+	for _, command := range commandsList {
 		fmt.Printf("%s: %s\n", command.name, command.description)
 	}
 	return nil
