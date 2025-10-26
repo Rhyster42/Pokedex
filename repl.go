@@ -19,7 +19,7 @@ type config struct {
 }
 
 var commandsList map[string]cliCommand
-var pages config
+var cfg config
 
 func init() {
 	commandsList = map[string]cliCommand{
@@ -60,7 +60,7 @@ func startRepl() {
 
 		command := wordList[0]
 		if cmd, exists := commandsList[command]; exists {
-			err := cmd.callback(&pages)
+			err := cmd.callback(&cfg)
 			if err != nil {
 				fmt.Printf("Error: %v\n", err)
 			}
@@ -68,22 +68,6 @@ func startRepl() {
 			fmt.Printf("Unknown command: %s\n", command)
 		}
 	}
-}
-
-func commandExit(cfg *config) error {
-	fmt.Println("Closing the Pokedex... Goodbye!")
-	os.Exit(0)
-	return nil
-}
-
-func commandHelp(cfg *config) error {
-	fmt.Println("Welcome to the Pokedex!")
-	fmt.Printf("Usage:\n\n")
-
-	for _, command := range commandsList {
-		fmt.Printf("%s: %s\n", command.name, command.description)
-	}
-	return nil
 }
 
 func cleanInput(text string) []string {
