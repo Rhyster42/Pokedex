@@ -1,42 +1,40 @@
 package main
 
 import (
+	"errors"
 	"fmt"
-
-	requests "github.com/Rhyster42/Pokedex/internal/pokeapi"
 )
 
 func commandMap(cfg *config) error {
-
-	var url string
-
-	if cfg.Next == "" {
-		url = "https://pokeapi.co/api/v2/location-area/"
-	} else {
-		url = cfg.Next
-	}
-
-	data, err := requests.GetData(url)
+	locationsResp, err := cfg.pokeapiClient.ListLocations(cfg.nextLocationsURL)
 	if err != nil {
 		return err
 	}
 
-	for i := 0; i < len(data.Results); i++ {
-		fmt.Println(data.Results[i].Name)
+	cfg.nextLocationsURL = locationsResp.Next
+	cfg.prevLocationsURL = locationsResp.Previous
+
+	for _, loc := range locationsResp.Results {
+		fmt.Println(loc.Name)
 	}
-
-	cfg.Next = data.Next
-	cfg.Previous = data.Previous
-
 	return nil
 }
 
 func commandMapb(cfg *config) error {
-	if cfg.Previous == "" {
-		fmt.Println("No Previous Locations")
-		return nil
+	if cfg.prevLocationsURL == nil {
+		return errors.New("you're on the first page")
 	}
-	cfg.Next = cfg.Previous
-	commandMap(cfg)
+
+	locationResp, err := cfg.pokeapiClient.ListLocations(cfg.prevLocationsURL)
+	if err != nil {
+		return err
+	}
+
+	cfg.nextLocationsURL = locationResp.Next
+	cfg.prevLocationsURL = locationResp.Previous
+
+	for _, loc := range locationResp.Results {
+		fmt.Println(loc.Name)
+	}
 	return nil
 }
