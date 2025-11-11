@@ -26,6 +26,8 @@ func commandCatch(cfg *config, pokemon string) error {
 	if randomPercent <= catchChance {
 		caughtMsg := fmt.Sprintf("%s was caught!", pokemon)
 		fmt.Println(caughtMsg)
+		cfg.caughtPokemon[pokemon] = pokemonResp
+		fmt.Println(cfg.caughtPokemon)
 	} else {
 		caughtMsg := fmt.Sprintf("%s escaped!", pokemon)
 		fmt.Println(caughtMsg)
