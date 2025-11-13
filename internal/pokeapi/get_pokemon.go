@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func (c *Client) getPokemon(pokemon string) (PokemonInfo, error) {
+func (c *Client) GetPokemon(pokemon string) (PokemonInfo, error) {
 
 	url := baseURL + "/pokemon/" + pokemon
 
@@ -40,7 +40,7 @@ func (c *Client) getPokemon(pokemon string) (PokemonInfo, error) {
 	}
 
 	// unmarshal data from JSON
-	pokemonInfo := LocationInfo{}
+	pokemonInfo := PokemonInfo{}
 	err = json.Unmarshal(dat, &pokemonInfo)
 	if err != nil {
 		return PokemonInfo{}, err
@@ -48,5 +48,5 @@ func (c *Client) getPokemon(pokemon string) (PokemonInfo, error) {
 
 	//add data to cache, return
 	c.cache.Add(url, dat)
-	return PokemonInfo{}, nil
+	return pokemonInfo, nil
 }
