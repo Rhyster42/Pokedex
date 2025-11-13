@@ -1,0 +1,10 @@
+# Binaries
+Pokedex
+Pokedex.exe
+Pokedex.dmg
+
+repl.log
+
+# OS/editor cruft
+.DS_Store
+Thumbs.db
