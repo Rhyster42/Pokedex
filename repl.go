@@ -41,7 +41,7 @@ func startRepl(cfg *config) {
 			}
 			continue
 		} else {
-			fmt.Printf("Unknown command")
+			fmt.Printf("Unknown command\n")
 			continue
 		}
 	}
@@ -90,6 +90,11 @@ func getCommands() map[string]cliCommand {
 			name:        "inspect <pokemon_name>",
 			description: "Inspect pokemon in Pokedex. Requires Pokemon argument",
 			callback:    commandInspect,
+		},
+		"pokedex": {
+			name:        "pokedex",
+			description: "List Pokemon in Pokedex",
+			callback:    commandPokedex,
 		},
 		"exit": {
 			name:        "exit",
